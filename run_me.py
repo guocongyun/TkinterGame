@@ -1,32 +1,28 @@
 # made it pep8 compliant
 import os
-import time
 from tkinter import *
 from random import *
 from PIL import Image, ImageTk
 
 # configuring window
-from PIL.Image import ANTIALIAS
-
 window = Tk()
-window.title("tkintergame")
-screen_width = window.winfo_screenwidth()
-screen_height = 1000
-window_width = 800
-window_height = screen_height
-center_width = screen_width / 2 - window_width / 2
-center_height = 0
-window.geometry("%dx%d+%d+%d" % (window_width, window_height, center_width,
-                                 center_height))
-w = window_width / 12
-h = window_height / 30
+window.title("ASDF")
+SCREEN_WIDTH = window.winfo_screenwidth()
+SCREEN_HEIGHT = 1000
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = SCREEN_HEIGHT
+CENTER_WIDTH = SCREEN_WIDTH / 2 - WINDOW_WIDTH / 2
+CENTER_HEIGHT = 0
+window.geometry("%dx%d+%d+%d" % (WINDOW_WIDTH, WINDOW_HEIGHT, CENTER_WIDTH, CENTER_HEIGHT))
+
+# defining width and height unit
+w = WINDOW_WIDTH / 12
+h = WINDOW_HEIGHT / 30
 
 # configuring canvas
-canvas = Canvas(window, bg="black", width=window_width, height=window_height)
+canvas = Canvas(window, bg="black", width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
 canvas.pack(fill="both", expand=TRUE)
 
-
-# The Data above are all constants
 
 class Battle:
     def generating_statistic(self):
@@ -44,7 +40,7 @@ class Battle:
         except:
             pass
 
-        self.life = Image.open("pixel_heart.png")
+        self.life = Image.open("./texture/pixel_heart.png")
         self.life = ImageTk.PhotoImage(self.life)
 
         for number in range(game_system.life):
@@ -54,7 +50,7 @@ class Battle:
                                                      anchor=NW)))
 
         game_system.score_identifier = canvas.create_text(
-            window_width - 100, h, fill="white", font="Times 10 bold",
+            WINDOW_WIDTH - 100, h, fill="white", font="Times 10 bold",
             text="Score : " + str(game_system.score), anchor=NW)
         game_system.level_identifier = canvas.create_text(
             6 * w, h,
@@ -65,20 +61,16 @@ class Battle:
 
     def move_start_position(self):
         self.position = canvas.coords(game_system.character[0].identifier)
-        if (self.position[0] + self.position[2]) / 2 < float(
-                self.start_position[0]) - 2:
+        if (self.position[0] + self.position[2]) / 2 < self.start_position[0] - 2:
             canvas.move(game_system.character[0].identifier, 1, 0)
             canvas.after(5, self.move_start_position)
-        elif (self.position[0] + self.position[2]) / 2 > float(
-                self.start_position[0]) + 2:
+        elif (self.position[0] + self.position[2]) / 2 > self.start_position[0] + 2:
             canvas.move(game_system.character[0].identifier, -1, 0)
             canvas.after(5, self.move_start_position)
-        elif (self.position[1] + self.position[3]) / 2 < float(
-                self.start_position[1]) - 2:
+        elif (self.position[1] + self.position[3]) / 2 < self.start_position[1] - 2:
             canvas.move(game_system.character[0].identifier, 0, 1)
             canvas.after(5, self.move_start_position)
-        elif (self.position[1] + self.position[3]) / 2 > float(
-                self.start_position[1]) + 2:
+        elif (self.position[1] + self.position[3]) / 2 > self.start_position[1] + 2:
             canvas.move(game_system.character[0].identifier, 0, -1)
             canvas.after(5, self.move_start_position)
         else:
@@ -89,7 +81,6 @@ class Battle:
             self.character_ability()
 
     class NormalEnemy:
-
         def __init__(self, character_size):
             x = randint(50, 200) / 100
             y = randint(50, 200) / 100
@@ -102,9 +93,6 @@ class Battle:
     class WeakEnemy(NormalEnemy):
         def __init__(self, character_size):
             super().__init__(character_size)
-            x = randint(50, 200) / 100
-            y = randint(50, 200) / 100
-            self.character_attribute = [x, y]
             self.color = "yellow"
 
     class HorizontalEnemy(NormalEnemy):
@@ -191,6 +179,8 @@ class Battle:
             self.character_attribute = [x, y]
             self.color = "grey"
 
+    #TODO: seperate into different modules
+
     def enemy_creation(self):
         number_of_enemy = game_system.level * 2
         weak_enemy = 1 + int(number_of_enemy / 10)
@@ -199,16 +189,13 @@ class Battle:
             overlap = False
             if enemy_count < weak_enemy:
                 character_size = (game_system.character[0].character_width *
-                                  game_system.character[
-                                      0].character_height - 120) * \
-                                 game_system.scale_factor
+                                  game_system.character[0].character_height - 120) * game_system.scale_factor
                 enemy = self.WeakEnemy(character_size)
             else:
                 character_size = (game_system.character[0].character_width *
-                                  game_system.character[
-                                      0].character_height + 80 * (
-                                          enemy_count - weak_enemy)) * \
-                                 game_system.scale_factor
+                                  game_system.character[0].character_height + 80 *
+                                  (enemy_count - weak_enemy)) * \
+                                  game_system.scale_factor
                 enemy = ""
                 if game_system.level >= 2:
                     random_number = randint(0, 100)
@@ -256,16 +243,16 @@ class Battle:
                         enemy = self.WeirdEnemy(character_size)
                 if enemy == "":
                     enemy = self.NormalEnemy(character_size)
-            enemy_x_pos = randint(0,
-                                  int(window_width - enemy.character_width))
+
+            enemy_x_pos = randint(0,int(WINDOW_WIDTH - enemy.character_width))
             enemy_y_pos = randint(0, 26 * int(h))
-            enemy_position = [enemy_x_pos, enemy_y_pos, enemy_x_pos +
-                              enemy.character_width,
+            enemy_position = [enemy_x_pos, enemy_y_pos,
+                              enemy_x_pos + enemy.character_width,
                               enemy_y_pos + enemy.character_height]
+
             for number in range(len(game_system.character)):
                 if number == 0:
-                    existing_position = canvas.coords(
-                        game_system.character[0].identifier)
+                    existing_position = canvas.coords(game_system.character[0].identifier)
                 else:
                     existing_position = game_system.character[number].xy
                 if existing_position[0] - 3 < enemy_position[2] and \
@@ -351,7 +338,7 @@ class Battle:
 
     def check_character_boarder(self):
         if game_system.life > 0:
-            self.character_save = open("character_saves.txt", "w+")
+            self.character_save = open("./saves/character_saves.txt", "w+")
             position = canvas.coords(game_system.character[0].identifier)
             self.character_save.write(str(game_system.score))
             self.character_save.write("\n" + str(game_system.life))
@@ -369,17 +356,17 @@ class Battle:
         self.character_save.close()
 
         if position[0] < 0:
-            canvas.coords(game_system.character[0].identifier, window_width,
+            canvas.coords(game_system.character[0].identifier, WINDOW_WIDTH,
                           position[1],
-                          window_width -
+                          WINDOW_WIDTH -
                           game_system.character[0].character_width,
                           position[3])
-        elif position[2] > window_width:
+        elif position[2] > WINDOW_WIDTH:
             canvas.coords(game_system.character[0].identifier,
                           game_system.character[0].character_width,
                           position[1], 0,
                           position[3])
-        elif position[3] > window_height:
+        elif position[3] > WINDOW_HEIGHT:
             canvas.coords(game_system.character[0].identifier,
                           position[0],
                           game_system.character[0].character_height,
@@ -387,8 +374,8 @@ class Battle:
                           0)
         elif position[1] < 0:
             canvas.coords(game_system.character[0].identifier, position[0],
-                          window_height, position[2],
-                          window_height -
+                          WINDOW_HEIGHT, position[2],
+                          WINDOW_HEIGHT -
                           game_system.character[0].character_height)
         removed_character = 0
         for character_i in range(len(game_system.character) - 1):
@@ -422,7 +409,7 @@ class Battle:
 
     def check_enemy_boarder(self):
         removed_character = 0
-        self.saved_file = open("enemy_saves.txt", "w+")
+        self.saved_file = open("./saves/enemy_saves.txt", "w+")
         for character_i in range(len(game_system.character) - 1):
             character_i = character_i + 1 - removed_character
             count = 1
@@ -438,10 +425,10 @@ class Battle:
             if position_i[0] <= 0:
                 game_system.character[character_i].character_attribute[0] = - \
                     game_system.character[character_i].character_attribute[0]
-            elif position_i[2] >= window_width:
+            elif position_i[2] >= WINDOW_WIDTH:
                 game_system.character[character_i].character_attribute[0] = - \
                     game_system.character[character_i].character_attribute[0]
-            elif position_i[3] >= window_height:
+            elif position_i[3] >= WINDOW_HEIGHT:
                 game_system.character[character_i].character_attribute[1] = - \
                     game_system.character[character_i].character_attribute[1]
             elif position_i[1] <= 0:
@@ -576,8 +563,8 @@ class TextAdventure:
             self.theme.append(texture_num_a)
             self.theme.append(texture_num_b)
 
-        self.texture_a = Image.open("tile_" + str(self.theme[0]) + "_full.png")
-        self.texture_b = Image.open("tile_" + str(self.theme[1]) + "_full.png")
+        self.texture_a = Image.open("./texture/tile_" + str(self.theme[0]) + "_full.png")
+        self.texture_b = Image.open("./texture/tile_" + str(self.theme[1]) + "_full.png")
         self.texture_a = self.texture_a.resize((int(
             GameSystem.texture_size[0]), int(GameSystem.texture_size[1])),
             Image.ANTIALIAS)
@@ -588,13 +575,13 @@ class TextAdventure:
         self.texture_b = ImageTk.PhotoImage(self.texture_b)
 
         count = 0
-        for number in range(int(window_height / GameSystem.texture_size[1])):
+        for number in range(int(WINDOW_HEIGHT / GameSystem.texture_size[1])):
 
             #
             height = GameSystem.texture_size[1] * number
-            if int(window_width / GameSystem.texture_size[0]) % 2 == 0:
+            if int(WINDOW_WIDTH / GameSystem.texture_size[0]) % 2 == 0:
                 count += 1
-            for number in range(int(window_width /
+            for number in range(int(WINDOW_WIDTH /
                                     GameSystem.texture_size[0])):
                 width = GameSystem.texture_size[0] * number
                 count += 1
@@ -755,22 +742,22 @@ class TextAdventure:
 class GameSystem:
 
     def resize_canvas(self, event):
-        global window_height, window_width, w, h
+        global WINDOW_HEIGHT, WINDOW_WIDTH, w, h
         GameSystem.pause = True
-        window_ratio = window_width / window_height
-        self.zoom_ratio = [event.height * window_ratio / window_width,
-                           event.height / window_height]
-        window_height = event.height
-        window_width = event.height * window_ratio
-        GameSystem.texture_size = [window_width / 4, window_height / 5]
+        window_ratio = WINDOW_WIDTH / WINDOW_HEIGHT
+        self.zoom_ratio = [event.height * window_ratio / WINDOW_WIDTH,
+                           event.height / WINDOW_HEIGHT]
+        WINDOW_HEIGHT = event.height
+        WINDOW_WIDTH = event.height * window_ratio
+        GameSystem.texture_size = [WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5]
         canvas.addtag_all("all")
-        canvas.config(width=window_width, height=window_height)
+        canvas.config(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
         canvas.scale("all", 0, 0, game_system.zoom_ratio[0],
                      game_system.zoom_ratio[1])
 
-        w = window_width / 12
-        h = window_height / 30
-        self.scale_factor = self.zoom_ratio[1] * window_height / 1000
+        w = WINDOW_WIDTH / 12
+        h = WINDOW_HEIGHT / 30
+        self.scale_factor = self.zoom_ratio[1] * WINDOW_HEIGHT / 1000
         self.text_adventure.texture_a, self.text_adventure.texture_b = \
             self.text_adventure.generating_texture(
                 False)
@@ -885,7 +872,7 @@ class GameSystem:
     def boss_key(self):
         if not self.boss:
             game_system.pause = True
-            screen_shot = PhotoImage(file="boss_key.png")
+            screen_shot = PhotoImage(file="./texture/boss_key.png")
             self.boss = canvas.create_image(0, 0, image=screen_shot, anchor=NW)
             self.fullscreen()
             return screen_shot
@@ -927,7 +914,7 @@ class GameSystem:
             self.text_adventure.character_boxes()
             self.text_adventure.character_creation()
         elif self.save_game:
-            character_save = open("character_saves.txt", "r+")
+            character_save = open("./saves/character_saves.txt", "r+")
             character = [line.rstrip("\n") for line in
                          character_save.readlines()]
             character_save.close()
@@ -951,8 +938,8 @@ class GameSystem:
             self.battle.life = self.battle.generating_statistic()
 
         return self.battle.generating_statistic(), \
-            self.text_adventure.texture_a, \
-            self.text_adventure.texture_b
+               self.text_adventure.texture_a, \
+               self.text_adventure.texture_b
 
     def check_game_status(self):
         if self.lost_life:
@@ -978,7 +965,7 @@ class GameSystem:
                         self.user_name = "Bob"
                 except:
                     pass
-                self.leader_list = open("player_records.txt", "r+")
+                self.leader_list = open("./saves/player_records.txt", "r+")
                 self.leaders[int(self.score)] = self.user_name
                 self.leader_list.seek(0,
                                       os.SEEK_END)
@@ -1011,7 +998,7 @@ class GameSystem:
                 for number in range(len(self.textures)):
                     canvas.delete(self.textures[number])
                     self.text_adventure.texture_a, \
-                        self.text_adventure.texture_b = \
+                    self.text_adventure.texture_b = \
                         self.text_adventure.generating_texture(
                             True)
                 game_system.character = []
@@ -1041,7 +1028,7 @@ class GameSystem:
                 for number in range(len(self.textures)):
                     canvas.delete(self.textures[number])
                     self.text_adventure.texture_a, \
-                        self.text_adventure.texture_b = \
+                    self.text_adventure.texture_b = \
                         self.text_adventure.generating_texture(
                             True)
                 game_system.character = []
@@ -1074,7 +1061,7 @@ class GameSystem:
                 self.leaders[leaders[2 * number]] = leaders[2 * number + 1]
         sorted_values = sorted(self.leaders.keys())
 
-        character_save = open("character_saves.txt", "r+")
+        character_save = open("./saves/character_saves.txt", "r+")
         character = [line.rstrip("\n") for line in character_save.readlines()]
 
         user_name = []
@@ -1211,12 +1198,12 @@ class GameSystem:
 
         self.check_game_status()
         canvas.bind("<Configure>", self.resize_canvas)
-        self.leader_list = open("player_records.txt", "r+")
+        self.leader_list = open("./saves/player_records.txt", "r+")
         self.entry = None
         self.leaders = {}
         self.texture_size = [200, 200]
         self.zoom_ratio = [1, 1]
-        self.scale_factor = self.zoom_ratio[1] * window_height / 1000
+        self.scale_factor = self.zoom_ratio[1] * WINDOW_HEIGHT / 1000
         self.battle = battle
         self.text_adventure = text_adventure
         self.default_size = 900
