@@ -1,54 +1,8 @@
+from random import randint
+from PIL import Image, ImageTk
+
+
 class TextAdventure:
-
-    def generating_texture(self, change_color):
-        if self.theme == [] or change_color:
-            styles = [3, 2, 1, 1, 3, 2, 1, 6, 0, 0, 0, 3, 5, 4]
-            texture_num_a = styles[randint(0, 6)] + 1
-            texture_num_b = styles[-randint(0, 6) - 1] + 1
-            while texture_num_a == texture_num_b or texture_num_a == 0 or \
-                    texture_num_b == 0:
-                texture_num_a = randint(0, 4)
-            self.theme = []
-            self.theme.append(texture_num_a)
-            self.theme.append(texture_num_b)
-
-        self.texture_a = Image.open("./texture/tile_" + str(self.theme[0]) + "_full.png")
-        self.texture_b = Image.open("./texture/tile_" + str(self.theme[1]) + "_full.png")
-        self.texture_a = self.texture_a.resize((int(
-            GameSystem.texture_size[0]), int(GameSystem.texture_size[1])),
-            Image.ANTIALIAS)
-        self.texture_a = ImageTk.PhotoImage(self.texture_a)
-        self.texture_b = self.texture_b.resize((int(
-            GameSystem.texture_size[0]), int(GameSystem.texture_size[1])),
-            Image.ANTIALIAS)
-        self.texture_b = ImageTk.PhotoImage(self.texture_b)
-
-        count = 0
-        for number in range(int(WINDOW_HEIGHT / GameSystem.texture_size[1])):
-
-            #
-            height = GameSystem.texture_size[1] * number
-            if int(WINDOW_WIDTH / GameSystem.texture_size[0]) % 2 == 0:
-                count += 1
-            for number in range(int(WINDOW_WIDTH /
-                                    GameSystem.texture_size[0])):
-                width = GameSystem.texture_size[0] * number
-                count += 1
-                GameSystem.textures = []
-                if count % 2 == 0:
-                    GameSystem.textures.append(
-                        canvas.tag_lower(
-                            canvas.create_image(
-                                width,
-                                height,
-                                image=self.texture_a, anchor=NW)))
-                else:
-                    GameSystem.textures.append(
-                        canvas.tag_lower(canvas.create_image(
-                            width,
-                            height,
-                            image=self.texture_b, anchor=NW)))
-        return self.texture_b, self.texture_a
 
     def generating_story(self):
         if len(game_system.design) > 0:
@@ -60,33 +14,6 @@ class TextAdventure:
             for number in range(len(game_system.character)):
                 canvas.delete(game_system.character[number].identifier)
                 game_system.character = []
-
-    def clear_screen(self):
-        try:
-            for number in range(len(game_system.character)):
-                if number != game_system.player_choice:
-                    canvas.delete(game_system.character[number].identifier)
-        except:
-            pass
-        try:
-            if game_system.player_choice != "":
-                game_system.character = [game_system.character[
-                                             game_system.player_choice]]
-        except:
-            pass
-        try:
-            for number in range(len(game_system.design)):
-                canvas.delete(game_system.design[number].identifier)
-        except:
-            pass
-        try:
-            for number in range(len(game_system.design)):
-                canvas.delete(game_system.design[number].identifier_text)
-        except:
-            pass
-        if len(game_system.identifier) > 0:
-            for number in range(len(game_system.identifier)):
-                canvas.delete(game_system.identifier[number])
 
     class Player:
         def __init__(self, size, width, height, attribute):

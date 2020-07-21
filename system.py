@@ -1,4 +1,30 @@
+from tkinter import Tk
+
 class System:
+
+    def clear_screen(self):
+        try:
+            for number in range(len(game_system.character)):
+                if number != game_system.player_choice:
+                    canvas.delete(game_system.character[number].identifier)
+        except: pass
+        try:
+            if game_system.player_choice != "":
+                game_system.character = [game_system.character[
+                                             game_system.player_choice]]
+        except: pass
+        try:
+            for number in range(len(game_system.design)):
+                canvas.delete(game_system.design[number].identifier)
+        except: pass
+        try:
+            for number in range(len(game_system.design)):
+                canvas.delete(game_system.design[number].identifier_text)
+        except: pass
+        if len(game_system.identifier) > 0:
+            for number in range(len(game_system.identifier)):
+                canvas.delete(game_system.identifier[number])
+
 
     def fullscreen(self):
         if self.window.attributes('-fullscreen'):
@@ -7,25 +33,21 @@ class System:
             self.window.attributes('-fullscreen', True)
 
     def resize_canvas(self, event):
-        global WINDOW_HEIGHT, WINDOW_WIDTH, w, h
         GameSystem.pause = True
-        self.window_ratio = WINDOW_WIDTH / WINDOW_HEIGHT
-        self.zoom_ratio = [event.height * self.window_ratio / WINDOW_WIDTH,
-                           event.height / WINDOW_HEIGHT]
+        self.window_ratio = self.WINDOW_WIDTH /  self.WINDOW_HEIGHT
+        self.zoom_ratio = [event.height * self.window_ratio / self.WINDOW_WIDTH,
+                           event.height /  self.WINDOW_HEIGHT]
         WINDOW_HEIGHT = event.height
         WINDOW_WIDTH = event.height * self.window_ratio
         GameSystem.texture_size = [WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5]
         self.canvas.addtag_all("all")
         self.canvas.config(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
-        self.canvas.scale("all", 0, 0, game_system.zoom_ratio[0],
-                     game_system.zoom_ratio[1])
+        self.canvas.scale("all", 0, 0,  self.zoom_ratio[0], self.zoom_ratio[1])
 
         w = WINDOW_WIDTH / 12
         h = WINDOW_HEIGHT / 30
         self.scale_factor = self.zoom_ratio[1] * WINDOW_HEIGHT / 1000
-        self.text_adventure.texture_a, self.text_adventure.texture_b = \
-            self.text_adventure.generating_texture(
-                False)
+        self.text_adventure.texture_a, self.text_adventure.texture_b = self.text_adventure.generating_texture(False)
         GameSystem.pause = False
 
     def __init__(self):
@@ -40,6 +62,7 @@ class System:
         self.window.title("ASDF")
         self.window.geometry("%dx%d+%d+%d" % (WINDOW_WIDTH, WINDOW_HEIGHT, CENTER_WIDTH, CENTER_HEIGHT))
 
+        # TODO make self.w and self.h into properties
         # defining width and height unit
         self.w = self.WINDOW_WIDTH / 12
         self.h = self.WINDOW_HEIGHT / 30
